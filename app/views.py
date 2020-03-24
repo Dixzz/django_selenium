@@ -27,6 +27,9 @@ def res(request):
         i = 2
     elif ch == 'https://www.goibibo.com/':
         i = 3
+    elif ch == "https://www.makemytrip.com/flights/":
+        i = 4
+
     else:
         i = 0
     print(fro, to, date, ch, adu, i)
@@ -154,4 +157,45 @@ def open(fro, to, date, ch, adu, i):
 
         #btn = driver.find_element_by_xpath('//*[@id="gi_search_btn"]')
         #driver.execute_script("arguments[0].click();", btn)
+        return HttpResponse('Success')
+
+    elif i == 4:
+        print('## Working on MMT ##')
+        print(fro, to, date, ch, adu)
+
+        month = int(datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%m"))
+        day = int(datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%d"))
+
+        month = datetime.date(1900, month, 1).strftime('%b')
+
+        #Find element and enter From journey details
+        e = driver.find_element_by_xpath('//*[@id="fromCity"]')
+        e.send_keys(fro)
+
+        #Find from element in autosuggestion
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//*[@id='react-autowhatever-1']//p[contains(text(), '%s')]"%fro)))
+        e = driver.find_element_by_xpath('//*[@id="react-autowhatever-1"]//p[contains(text(), "%s")]'%fro)
+        print(e.text)
+        e.click()
+
+        # Find element and enter From journey details
+        m = driver.find_element_by_xpath('//*[@id="toCity"]')
+        print(m.text)
+        m.send_keys(to)
+
+        # Find from element in autosuggestion
+        '''WebDriverWait(driver, 15).until(EC.visibility_of_element_located((By.XPATH, "//*[@id='react-autowhatever-1']//p[contains(text(), '%s')]"%to)))
+        e = driver.find_element_by_xpath('//*[@id="react-autowhatever-1"]//p[contains(text(), "%s")]' % to)
+        e.click()'''
+
+        "//div[contains(@aria-label,'Mar 07 ')]"
+
+        '''e = driver.find_element_by_xpath("//*[@class='lbl_input latoBold appendBottom10']")
+        driver.execute_script("arguments[0].click();", e)
+
+        m = WebDriverWait(driver, 10)
+        m.until(EC.visibility_of_element_located(
+            (By.XPATH, "//div[contains(@aria-label,'%s %d')]"%(month, day))))
+        driver.find_element_by_xpath("//div[contains(@aria-label,'%s %d')]"%(month, day)).click()'''
+
         return HttpResponse('Success')
