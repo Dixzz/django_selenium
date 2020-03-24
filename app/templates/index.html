@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<head>
+<title>Online Ticket System</title>
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css?family=Comfortaa&display=swap');
+body{font-family: Comfortaa;}
+input{width: 150px;margin-top: 5px;}
+.nospace{width: 5%}
+</style>
+<script>
+    function validDate(){
+    var i = document.getElementById('dateJour').value;
+    var d = new Date(i);
+    d.setHours(0,0,0,0);
+    var x = new Date();
+    x.setHours(0,0,0,0);
+    if (d < x){
+            alert("Do not enter past date");
+            document.getElementById("dateJour").valueAsDate=null;
+            return false;
+        }
+        return true;
+    }
+</script>
+<body bgcolor="black" text="white" style="margin: 15px;" >
+<h1>Hello</h1>
+<form method="post" id="myForm" action="result">
+    {% csrf_token %}
+    <label for="fromm">From:</label><br>
+    <input name="fromm" type="text" id="fromm" required><br><br>
+
+    <label for="To">To:</label><br>
+    <input name="To" type="text" id="To" required><br><br>
+
+    <label for="dateJour">Choose a date:</label><br>
+    <input name="date" id="dateJour" type="date" required style="font-family: Comfortaa;" oninput="validDate()"><br><br>
+
+    <label for="adults">Enter number of adults:</label><br>
+    <input name="adults" id="adults" type="number" required value="1" min="1" oninput="validity.valid||(value='');"><br><br>
+
+    <label for="webs">Enter website to search:</label><br>
+    <select name="choice" id="webs" style="margin-top:5px; margin-bottom: 15px;">
+        <option value="https://www.cleartrip.com" selected>Cleartrip</option>
+        <option value="https://www.easemytrip.com">Easemytrip</option>
+        <option value="https://www.goibibo.com/">Goibibo</option>
+        <option value="0">All</option>
+    </select>
+    <br><input type="submit" class="nospace"><br>
+</form>
+</body>
+</html>
