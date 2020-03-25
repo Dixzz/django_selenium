@@ -1,16 +1,40 @@
 <!DOCTYPE html>
 <html lang="en-US">
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+{% load static %}
 <head>
-<title>Online Ticket System</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Online Ticket System</title>
+
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+
+	<!-- Bootstrap -->
+	<link type="text/css" rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
 </head>
-<style>
-@import url('https://fonts.googleapis.com/css?family=Comfortaa&display=swap');
-body{font-family: Comfortaa;}
-input{width: 150px;margin-top: 5px;}
-.nospace{width: 5%}
-</style>
 <script>
+	function redirect(){
+	var one = document.getElementById('fromm').value;
+	var two = document.getElementById('To').value;
+	var date = document.getElementById('dateJour').value;
+
+		if (one.length != 0 && two.length != 0 && date.length != 0){
+		alert("Redirecting to client page");
+		return true;
+		}
+		return false;
+	}
     function validDate(){
     var i = document.getElementById('dateJour').value;
     var d = new Date(i);
@@ -25,31 +49,93 @@ input{width: 150px;margin-top: 5px;}
         return true;
     }
 </script>
-<body bgcolor="black" text="white" style="margin: 15px;" >
-<h1>Hello</h1>
+<style>
+	input[type="date"]::-webkit-inner-spin-button,
+	input[type="date"]::-webkit-calendar-picker-indicator {
+    -webkit-appearance: none;
+}
+input{font-family:Open Sans;}
+</style>
+
+<body style="font-family:Montserrat">
 <form method="post" id="myForm" action="result">
-    {% csrf_token %}
-    <label for="fromm">From:</label><br>
-    <input name="fromm" type="text" id="fromm" required><br><br>
+	    {% csrf_token %}
+	<div id="booking" class="section">
+		<div class="section-center">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-7 col-md-push-6">
+						<div class="booking-cta">
+							<h1>Book your flight tickets now!</h1>
+							<p>An automated webpage which shows the details of journey without advertisements, it's super fast, <br>Enter details choose a website get details <br> Simple .
+							</p>
+						</div>
+					</div>
+					<div class="col-md-4 col-md-pull-8">
+						<div class="booking-form" style="width: 500px;">
+							<form>
+								<div class="form-group">
+									<span class="form-label">From</span>
+									<input class="form-control" name="fromm" type="text" id="fromm" placeholder="Enter a source" style="width: 250px;margin-bottom: -15px;" required>
+								</div>
+								<div class="form-group">
+									<span class="form-label">To</span>
+									<input  class="form-control" name="To" type="text" id="To" placeholder="Enter a destination" style="width: 250px; margin-bottom: -15px;" required>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<span class="form-label">Choose Date</span>
+											<input name="date" id="dateJour" class="form-control" type="date"  required style="width: 250px; margin-bottom: -15px;" oninput="validDate()">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-4">
+										<div class="form-group">
+											<span class="form-label">Website</span>
+											<select class="form-control" name="choice" id="webs">
+										        <option value="https://www.cleartrip.com" selected>Cleartrip</option>
+ 										        <option value="https://www.easemytrip.com">Easemytrip</option>
+										        <option value="https://www.goibibo.com/">Goibibo</option>
+										        <option value="https://www.makemytrip.com/flights/">MakeMyTrip</option>
+										        <option value="0">All</option>
+											</select>
+											<span class="select-arrow"></span>
+										</div>
+									</div>
+									<br><br><br><br>
+									<div class="col-sm-4 col-md-pull-4">
+										<div class="form-group">
+											<span class="form-label">Traveller</span>
+										    <input class="form-control" name="adults" id="adults" type="number" required value="1" min="1" max="10" oninput="validity.valid||(value='');">
 
-    <label for="To">To:</label><br>
-    <input name="To" type="text" id="To" required><br><br>
-
-    <label for="dateJour">Choose a date:</label><br>
-    <input name="date" id="dateJour" type="date" required style="font-family: Comfortaa;" oninput="validDate()"><br><br>
-
-    <label for="adults">Enter number of adults:</label><br>
-    <input name="adults" id="adults" type="number" required value="1" min="1" oninput="validity.valid||(value='');"><br><br>
-
-    <label for="webs">Enter website to search:</label><br>
-    <select name="choice" id="webs" style="margin-top:5px; margin-bottom: 15px;">
-        <option value="https://www.cleartrip.com" selected>Cleartrip</option>
-        <option value="https://www.easemytrip.com">Easemytrip</option>
-        <option value="https://www.goibibo.com/">Goibibo</option>
-        <option value="https://www.makemytrip.com/flights/">MakeMyTrip</option>
-        <option value="0">All</option>
-    </select>
-    <br><input type="submit" class="nospace"><br>
+											<span class="select-arrow"></span>
+										</div>
+									</div>
+									<div class="col-sm-4 col-md-pull-4">
+										<div class="form-group">
+											<span class="form-label">Children</span>
+											<select class="form-control">
+												<option selected>0</option>
+												<option>1</option>
+												<option>2</option>
+											</select>
+											<span class="select-arrow"></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-btn">
+									<input type="Submit" class="submit-btn" onclick="return redirect()">
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </form>
-</body>
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+
 </html>
