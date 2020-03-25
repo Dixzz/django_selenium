@@ -4,9 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import *
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -43,92 +41,52 @@ def open(fro, to, date, ch, adu, i):
 
     if i == 1:
         date = datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m-%Y")
-        print('## Working on Cleartrip ##')
-        print(fro, to, date, ch, adu)
-        #driver.get('https://www.cleartrip.com/')
+        print('### Working on Cleartrip ###')
+
+        # This was the easiest website to work, great thanks to web dev of ClearTrip
         driver.find_element_by_xpath('//*[@id="FromTag"]').send_keys(fro)
         driver.find_element_by_xpath('//*[@id="ToTag"]').send_keys(to)
         driver.find_element_by_xpath('//*[@id="DepartDate"]').send_keys(date)
         driver.find_element_by_xpath('//*[@id="Adults"]').send_keys(adu)
+
         btn = driver.find_element_by_xpath('/html/body/section[2]/div/div[1]/div/form/div[6]/input[2]')
         driver.execute_script("arguments[0].click();", btn)
         return HttpResponse('Success')
 
     elif i == 2:
-        print('## Working on EaseMyTrip ##')
-        print(fro, to, date, ch, adu)
-        '''e = driver.find_element_by_xpath('//*[@id="FromSector_show"]')
-        e.clear()
-        e.send_keys(fro)
-        e = driver.find_element_by_id('fromautoFill')
-        e.click()'''
+        print('### Working on EaseMyTrip ###')
 
+        #From Journey
+        m = driver.find_element_by_xpath('//input[@id="FromSector_show"]')
+        m.click()
+        m.send_keys(fro)
+
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//li[@class='ui-menu-item']//span[@class='ct'][contains(text(),'%s')]"%fro)))
+        e = driver.find_element_by_xpath('//li[@class="ui-menu-item"]//span[@class="ct"][contains(text(),"%s")]'%fro)
+        e.click()
+
+        #To journey
         m = driver.find_element_by_xpath('//input[@id="Editbox13_show"]')
         m.click()
-        driver.implicitly_wait(10)
         m.send_keys(to)
-        #m.click()
-        driver.implicitly_wait(20)
-        m.send_keys(Keys.ARROW_DOWN, Keys.RETURN)
-        driver.implicitly_wait(20)
 
-        #m.send_keys(Keys.ARROW_DOWN)
-        #m.send_keys(Keys.ENTER)
-        #print(m.text, m.id)
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//li[@class='ui-menu-item']//span[@class='ct'][contains(text(),'%s')]"%to)))
+        e = driver.find_element_by_xpath('//li[@class="ui-menu-item"]//span[@class="ct"][contains(text(),"%s")]'%to)
+        e.click()
 
-        #WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//*[@id="hdnAutoFill"]')))
-        #e = driver.find_element_by_xpath('//*[@id="hdnAutoFill"]')
-        #driver.execute_script('arguments[0].click();', e)
-
-
+        #Date
         e = driver.find_element_by_xpath('//*[@id="ddate"]')
         e.click()
         date = datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%d/%m/%Y")
         driver.find_element_by_xpath('//*[contains(@id,"_%s")]'%date).click()
 
+        #Search
         btn = driver.find_element_by_xpath('//*[@id="search"]/input')
-        #driver.execute_script("arguments[0].click();", btn)
+        driver.execute_script("arguments[0].click();", btn)
         return HttpResponse('Success')
 
     elif i == 3:
-        print('## Working on Goibibo ##')
-        print(fro, to, date, ch, adu)
-
-        '''WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "react-autosuggest-1")))
-        m = driver.find_element_by_id('react-autosuggest-1')
-        text_contents = [el.text for el in driver.find_elements_by_xpath("//ul[@id='react-autosuggest-1']/li")]
-
-        m = str([text_contents.__getitem__(0)])
-        brack1 = m.find('(')
-        brack2 = m.find(')')
-        place = m[brack1:brack2+1]
-        all1 = fro+" "+place
-        e = driver.find_element_by_xpath('//*[@id="gosuggest_inputSrc"]')
-        e.send_keys(all1)
-        print(all1)
-
-        e = driver.find_element_by_xpath('//*[@id="gosuggest_inputDest"]')
-        e.send_keys(to)
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "react-autosuggest-1")))
-        m = driver.find_element_by_id('react-autosuggest-1')
-        text_contents = [el.text for el in driver.find_elements_by_xpath("//ul[@id='react-autosuggest-1']/li")]
-
-        m = str([text_contents.__getitem__(0)])
-        brack1 = m.find('(')
-        brack2 = m.find(')')
-        place = m[brack1:brack2+1]
-        all = to+" "+place
-        e = driver.find_element_by_xpath('//*[@id="gosuggest_inputDest"]')
-        print(all)
-
-'''
-        '''e = driver.find_element_by_xpath('//*[@id="gosuggest_inputSrc"]')
-        e.send_keys(fro)
-
-        e = driver.find_element_by_xpath('//*[@id="gosuggest_inputDest"]')
-        e.send_keys(to)'''
-
-        print(fro, to)
+        print('### Working on Goibibo ###')
 
         # Journey Source #
         e = driver.find_element_by_xpath('//*[@id="gosuggest_inputSrc"]')
@@ -142,26 +100,24 @@ def open(fro, to, date, ch, adu, i):
         e = driver.find_element_by_xpath('//*[@id="gosuggest_inputDest"]')
         e.clear()
         e.send_keys(to)
-        driver.implicitly_wait(10)
-        print(to)
-        f = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "react-autosuggest-1")))
-        #driver.find_element('react-autosuggest-1', )
+
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "react-autosuggest-1")))
         driver.find_element_by_xpath("//ul[@id='react-autosuggest-1']/li[@id='react-autosuggest-1-suggestion--0']").click()
 
-        # Journey Date #
+        # Journey Date
         e = driver.find_element_by_xpath('//*[@id="departureCalendar"]')
         e.click()
 
         date = datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%Y%m%d")
         driver.find_element_by_xpath('//*[@id="fare_%s"]'%date).click()
 
-        #btn = driver.find_element_by_xpath('//*[@id="gi_search_btn"]')
-        #driver.execute_script("arguments[0].click();", btn)
+        # Search
+        btn = driver.find_element_by_xpath('//*[@id="gi_search_btn"]')
+        driver.execute_script("arguments[0].click();", btn)
         return HttpResponse('Success')
 
     elif i == 4:
-        print('## Working on MMT ##')
-        print(fro, to, date, ch, adu)
+        print('### Working on MMT ###')
 
         month = int(datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%m"))
         day = int(datetime.datetime.strptime(date, "%Y-%m-%d").strftime("%d"))
@@ -170,32 +126,41 @@ def open(fro, to, date, ch, adu, i):
 
         #Find element and enter From journey details
         e = driver.find_element_by_xpath('//*[@id="fromCity"]')
-        e.send_keys(fro)
+        e.send_keys(fro+"")
 
         #Find from element in autosuggestion
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//*[@id='react-autowhatever-1']//p[contains(text(), '%s')]"%fro)))
         e = driver.find_element_by_xpath('//*[@id="react-autowhatever-1"]//p[contains(text(), "%s")]'%fro)
-        print(e.text)
         e.click()
 
-        # Find element and enter From journey details
-        m = driver.find_element_by_xpath('//*[@id="toCity"]')
-        print(m.text)
-        m.send_keys(to)
+        # Find element and enter To journey details
+        e = driver.find_element_by_xpath('//input[@id="toCity"]')
+        driver.execute_script("arguments[0].click();", e)
+        e.send_keys(to+"")
 
-        # Find from element in autosuggestion
-        '''WebDriverWait(driver, 15).until(EC.visibility_of_element_located((By.XPATH, "//*[@id='react-autowhatever-1']//p[contains(text(), '%s')]"%to)))
-        e = driver.find_element_by_xpath('//*[@id="react-autowhatever-1"]//p[contains(text(), "%s")]' % to)
-        e.click()'''
+        # Select to autosuggestion partially
+        # HACK to fix code, unable to find element
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//input[@class="react-autosuggest__input react-autosuggest__input--open"]')))
+        e = driver.find_element_by_xpath('//input[@class="react-autosuggest__input react-autosuggest__input--open"]')
+        e.send_keys(to+"")
 
-        "//div[contains(@aria-label,'Mar 07 ')]"
-
-        '''e = driver.find_element_by_xpath("//*[@class='lbl_input latoBold appendBottom10']")
+        # Find from element in autosuggestion for to
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="react-autowhatever-1"]//p[contains(text(), "%s")]'%to)))
+        e = driver.find_element_by_xpath('//*[@id="react-autowhatever-1"]//*[@class="react-autosuggest__suggestion react-autosuggest__suggestion--first"]//p[contains(text(), "%s")]'%to)
         driver.execute_script("arguments[0].click();", e)
 
+        #Date
+        #Find element which opens datepicker and click
+        e = driver.find_element_by_xpath("//*[@class='lbl_input latoBold appendBottom10']")
+        driver.execute_script("arguments[0].click();", e)
+
+        #Dind date matching to label and click
         m = WebDriverWait(driver, 10)
         m.until(EC.visibility_of_element_located(
             (By.XPATH, "//div[contains(@aria-label,'%s %d')]"%(month, day))))
-        driver.find_element_by_xpath("//div[contains(@aria-label,'%s %d')]"%(month, day)).click()'''
+        driver.find_element_by_xpath("//div[contains(@aria-label,'%s %d')]"%(month, day)).click()
 
+        #Search button
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="root"]//*[@data-cy="submit"]//*[contains(text(), "Search")]')))
+        driver.find_element_by_xpath('//*[@id="root"]//*[@data-cy="submit"]//*[contains(text(), "Search")]').click()
         return HttpResponse('Success')
